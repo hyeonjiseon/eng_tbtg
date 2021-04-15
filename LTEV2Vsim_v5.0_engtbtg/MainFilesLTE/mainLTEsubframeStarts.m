@@ -34,7 +34,7 @@ if mod((timeManagement.elapsedTime_subframes-1),appParams.NbeaconsT)+1 == 14
 end
 
 %hyeonji - Brid일 때 transmittingID 잘 건너뛰는 지 확인하는 용
-if mod((timeManagement.elapsedTime_subframes-1),appParams.NbeaconsT)+1 == 14
+if mod((timeManagement.elapsedTime_subframes-1),appParams.NbeaconsT)+1 == 1
     hi = 1;
 end
 
