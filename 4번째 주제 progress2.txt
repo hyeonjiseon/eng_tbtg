@@ -1,0 +1,22 @@
+1. RRI 길이조절 in 변환sps
+ - 이거 자체는 문제가 없었다
+ - RRI로 200ms 이후를 예약했으면, 100ms 이후엔 100ms 이후라고 당겨져야 함
+
+2. edge effect 처리 -> 기존sps결과와 차이가 있어야 함
+
+
+3. 한 시뮬레이션에서 변환sps와 기존 sps 같이 PRR 결과 나오게 하기
+  - outParams.enableUpdateDelayHD가 동일한 subframe에서 동시 전송으로만 발생하는 업데이트 지연을 계산할 수 있는 boolean이라는데,
+    이것도 true 시켜줘야 할까? half duplex 전용이라고 하긴 하는데..???????????????
+  - 논문에서 packet buffer에 대한 내용이 있었는데 이걸 코드에 적용해 줘야 할까...??????????????
+
+
+4. PIR
+
+5. no show 문제를 극대화해서 보려면 200vehicles/km부터 그 이상을 봐야 할 듯
+6. 저번에 CBR얘기가 나왔는데 이것도 같이 보면 좋을 듯
+7. 한 lane 내에서도 속도를 일정하게 하지 말고, 그 일정한 속도를 평균으로 하는 전후 값들을 지정해 주어 변동을 주었을 때도 성능 향상 있는 지 확인
+ - 근데 어차피 속도가 매우 크게 변하지 않는 이상 generationInterval은 같은데 의미가 있나 싶긴 하네..
+ - interval을 바꾸는 거면 initiateApplicationParameters.m의 variabilityTbeacon을 참고해 봐도 좋을 것 같다.
+
+내게 와 4번째 주제!!!! 논문되자~

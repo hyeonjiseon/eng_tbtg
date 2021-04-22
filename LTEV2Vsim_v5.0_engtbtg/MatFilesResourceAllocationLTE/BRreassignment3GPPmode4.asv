@@ -142,6 +142,10 @@ if ~isempty(stationManagement.transmittingIDsLTE)
                stationManagement.knownRRPMatrix(BR, RRP, idVrx) = 1; %수신자 입장에서 RRP 이후 같은 위치 BRid에 체크                            
            end
         end
+%         %hyeonji - BRid 같다고 RC값 떨어뜨리면 뛰어 넘었을 때도 떨어지게 되니까 추가된 만큼 더해주기      
+%         if RRP > 1
+%            stationManagement.resReselectionCounterLTE(idVtx) = stationManagement.resReselectionCounterLTE(idVtx) + (RRP - 1);
+%         end
     end
 end
 
