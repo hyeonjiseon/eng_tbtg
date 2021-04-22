@@ -335,8 +335,8 @@ if simParams.technology ~= 2 % not only 11p
 %         stationManagement.knownUsedMatrixLTE = zeros(appParams.Nbeacons,simValues.maxID);
 
         %hyeonji - RRI 크기 조절해 주기 위함
-        stationManagement.ReserveRRPMatrix = zeros(appParams.NbeaconsT*appParams.NbeaconsF,int8(max(timeManagement.generationInterval)*10),simValues.maxID);
-        stationManagement.knownRRPMatrix = zeros(appParams.NbeaconsT*appParams.NbeaconsF,int8(max(timeManagement.generationInterval)*10),simValues.maxID-1);
+        stationManagement.ReserveRRPMatrix = zeros(appParams.NbeaconsT*appParams.NbeaconsF,length(max(timeManagement.generationInterval)),simValues.maxID);
+        stationManagement.knownRRPMatrix = zeros(appParams.NbeaconsT*appParams.NbeaconsF,max(timeManagement.generationInterval),simValues.maxID-1);
         
         % First random allocation 
         [stationManagement.BRid,~] = BRreassignmentRandom(simValues.IDvehicle,stationManagement.BRid,appParams.Nbeacons,simParams,appParams);

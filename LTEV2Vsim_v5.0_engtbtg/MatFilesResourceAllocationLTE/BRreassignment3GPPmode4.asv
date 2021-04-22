@@ -122,6 +122,13 @@ end
 % end
 
 %hyeonji - packetInterval에 따라서 바뀌는 RRP로 예약
+if (timeManagement.elapsedTime_subframes > 100) && (mod(timeManagement.elapsedTime_subframes, 100) == 0)
+    %knownRRPMatrix를 RRP행 왼쪽으로 하나 옮기기
+%    stationManagement.knownRRPMatrix = circshift(
+    stationManagement.knownRRPMatrix = circshift(stationManagement.knownRRPMatrix, -1, 2);
+    stationManagement.k(:,int8(max(timeManagement.generationInterval)), :) = 0;
+    
+end
 if ~isempty(stationManagement.transmittingIDsLTE)     
     for i = 1:length(stationManagement.indexInActiveIDsOnlyLTE_OfTxLTE)
         idVtx = stationManagement.transmittingIDsLTE(i);%transmittingID(i)
@@ -129,7 +136,7 @@ if ~isempty(stationManagement.transmittingIDsLTE)
         BRtx = stationManagement.BRid(idVtx);%transmittingID(i)의 BRid
         RRItx = stationManagement.RRItx(idVtx);%transmittingID(i)의 RRI
         %hyeonji - transmittingID의 BRid에서 RRP만큼 떨어진 곳으로 예약
-        %예약된 거 있나 비워주는 작업이 필요할까?
+        %예약된 거 있나 비워주는 작업이 필요할까? 뭣하러 비워 - hj
         stationManagement.ReserveRRPMatrix(BRtx,RRItx,idVtx) = 1; %일단 0.1~1까지 0.1 단위로만 된다 생각해보자 - hj
         for indexNeighborsOfVtx = 1:length(stationManagement.neighborsIDLTE(indexVtxLte,:)) %transmittingID의 이웃들 갯수 - hj
            idVrx = stationManagement.neighborsIDLTE(indexVtxLte,indexNeighborsOfVtx); %transmittingID의 neighborsID - hj
@@ -142,10 +149,6 @@ if ~isempty(stationManagement.transmittingIDsLTE)
                stationManagement.knownRRPMatrix(BR, RRP, idVrx) = 1; %수신자 입장에서 RRP 이후 같은 위치 BRid에 체크                            
            end
         end
-%         %hyeonji - BRid 같다고 RC값 떨어뜨리면 뛰어 넘었을 때도 떨어지게 되니까 추가된 만큼 더해주기      
-%         if RRP > 1
-%            stationManagement.resReselectionCounterLTE(idVtx) = stationManagement.resReselectionCounterLTE(idVtx) + (RRP - 1);
-%         end
     end
 end
 
