@@ -78,7 +78,6 @@ if ~isempty(stationManagement.transmittingIDsLTE)
     % If the received power measured on that resource is lower than
     % a threshold, it is assumed that no power is measured
     sensedPowerCurrentSF(sensedPowerCurrentSF<phyParams.Pnoise_MHz) = 0;
-
     stationManagement.sensingMatrixLTE(1,BRids_currentSF,stationManagement.activeIDsLTE) = sensedPowerCurrentSF;
     
 end
@@ -122,7 +121,11 @@ end
 % end
 
 %hyeonji - packetInterval에 따라서 바뀌는 RRP로 예약
-if (timeManagement.elapsedTime_subframes > 100) && (mod(timeManagement.elapsedTime_subframes, 100) == 0)    
+if (timeManagement.elapsedTime_subframes > 100) && (mod(timeManagement.elapsedTime_subframes, 100) == 0) 
+%100ms를 포함하는 게 맞나? 실제 결과는 포함하든 말든 차이가 없긴 함 - hj
+%BRid가 1부터 100까지 정수 중 하나가 뽑히니까 BRidT 100에 RRI 100ms인 것까지 생각하면 100ms를 포함시키지
+%않는 게 맞는 듯 - hj
+%if mod(timeManagement.elapsedTime_subframes, 100) == 0
     stationManagement.knownRRPMatrix = circshift(stationManagement.knownRRPMatrix, -1, 2);%knownRRPMatrix를 RRP행 왼쪽으로 하나 옮기기
     stationManagement.knownRRPMatrix(:,int8(max(timeManagement.generationInterval)*10), :) = 0;%RRP=1인 건 시간이 지나서 지나감    
 end
