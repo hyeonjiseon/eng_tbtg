@@ -55,11 +55,12 @@ Nreassign = 0;
 % 3rd D -> IDs of vehicles
 
 % Array of BRids in the current subframe 
-BRids_currentSF = ((currentT-1)*NbeaconsF+1):(currentT*NbeaconsF);
+BRids_currentSF = ((currentT-1)*NbeaconsF+1):(currentT*NbeaconsF);%currentT와 같은 값 - hj
 
 % A shift is performed to the estimations (1st dimension) corresponding 
 % to the BRids in the current subframe for all vehicles
 stationManagement.sensingMatrixLTE(:,BRids_currentSF,:) = circshift(stationManagement.sensingMatrixLTE(:,BRids_currentSF,:),1);
+%해당 BRid_currentSF를 아래로 한 칸 밀고 - hj
 
 % The values in the first position of the 1st dimension (means last measurement) of
 % the BRids in the current subframe are reset for all vehicles
@@ -79,7 +80,7 @@ if ~isempty(stationManagement.transmittingIDsLTE)
     % a threshold, it is assumed that no power is measured
     sensedPowerCurrentSF(sensedPowerCurrentSF<phyParams.Pnoise_MHz) = 0;
     stationManagement.sensingMatrixLTE(1,BRids_currentSF,stationManagement.activeIDsLTE) = sensedPowerCurrentSF;
-    
+    %
 end
 
 %hyeonji - 기존 RRI 부분이니까 다시 작성해야 함
@@ -123,7 +124,7 @@ end
 %hyeonji - packetInterval에 따라서 바뀌는 RRP로 예약
 if (timeManagement.elapsedTime_subframes > 100) && (mod(timeManagement.elapsedTime_subframes, 100) == 0) 
 %100ms를 포함하는 게 맞나? 실제 결과는 포함하든 말든 차이가 없긴 함 - hj
-%BRid가 1부터 100 사이에 
+%BRid가 1부터 100까지 정수 중 하나가 뽑히니까 BRidT 100에 RRI 100ms인 것까지 생각하면 100ms를 포함시키지 않는 게 맞는 듯 - hj
 %if mod(timeManagement.elapsedTime_subframes, 100) == 0
     stationManagement.knownRRPMatrix = circshift(stationManagement.knownRRPMatrix, -1, 2);%knownRRPMatrix를 RRP행 왼쪽으로 하나 옮기기
     stationManagement.knownRRPMatrix(:,int8(max(timeManagement.generationInterval)*10), :) = 0;%RRP=1인 건 시간이 지나서 지나감    
@@ -214,7 +215,7 @@ for indexSensingV = 1:Nscheduled
     
     % Select the sensing matrix only for those vehicles that perform reallocation
     % and calculate the average of the measured power over the sensing window
-    %각 BRid에 해당하는 평균 sensing값 [0 0 0 ]- hj
+    %각 BRid에 해당하는 평균 sensing값 [0 0 0]- hj
     sensingMatrixScheduled = sum(stationManagement.sensingMatrixLTE(:,:,scheduledID(indexSensingV)),1)/length(stationManagement.sensingMatrixLTE(:,1,1));
     % "sensingMatrixScheduled" is a '1 x NbeaconIntervals' vector
         
@@ -258,8 +259,8 @@ for indexSensingV = 1:Nscheduled
     rpMatrix = randperm(Nbeacons);
     
     %hyeonji - 이거 왜 섞는거니?? 그 BR 쓴다는 의미를 섞어버리면 어캄?? 어차피 갯수는 같으니까 순서를 섞어서 어떤
-    %정렬 효과를 줄이겠다는 것 같은데..
-    knownRRPMatrixScheduledPerm = knownRRPMatrixScheduled(rpMatrix);
+    %정렬 효과를 줄이겠다는 것 같은데.. -> 다 같이 섞어서 괜찮음
+    knownRRPMatrixPerm = knownRRPMatrixScheduled(rpMatrix);
 
     % Build matrix made of random permutations of the column indexes
     % Permute sensing matrix
@@ -277,7 +278,8 @@ for indexSensingV = 1:Nscheduled
         % powerThreshold is increased by 3 dB
 %         usableBRs = ((sensingMatrixPerm*0.015)<powerThreshold) | ((sensingMatrixPerm<inf) & (knownUsedMatrixPerm<1));
         %hyeonji - 내가 나를 sensing하면 inf가 되더라
-        usableBRs = ((sensingMatrixPerm*0.015)<powerThreshold) | ((sensingMatrixPerm<inf) & (knownRRPMatrixScheduledPerm<1));
+        usableBRs = ((sensingMatrixPerm*0.015)<powerThreshold) | ((sensingMatrixPerm<inf) & (knownRRPMatrixPerm<1));
+        %남이 썼어도 powerThreshold보다 낮거나 내가 쓴 게 아니면서 그 BRid에 RRP로 예약이 수신되지 않은 것 - hj
         if sum(usableBRs) < MBest
             powerThreshold = powerThreshold * 2;
         else
@@ -287,12 +289,16 @@ for indexSensingV = 1:Nscheduled
     
     %hyeonji - (step 3 : RSSI 평균값들 중 가장 낮은 20% 중에서) 랜덤선택
     % To mark unacceptable RB as occupied, their power is set to Inf
+    %usableBRs가 아닌 것은 값을 더해서 sensingMatrixPerm에서 값을 높여 버림 - hj
     sensingMatrixPerm = sensingMatrixPerm + (1-usableBRs) * max(phyParams.P_ERP_MHz_LTE);
     
     % Sort sensingMatrix in ascending order
+    %sensingMatrixPerm을 값이 낮은 순서로 재배열, column index를 뽑아냄 - hj
     [~, bestBRPerm] = sort(sensingMatrixPerm);
 
     % Reorder bestBRid matrix
+    %bestBRPerm은 sensingMatrixPerm을 값이 낮은 순서대로 정렬한 것의 column index이다. - hj
+    %sensingMatrixPerm은 이미 rpMatrix 순서로 섞어 놓은 상태이므로, 원래 BRid를 알기 위해선 rpMatrix(index)값을 봐야 한다. - hj
     bestBR = rpMatrix(bestBRPerm);
 
     % Keep the best M canditates

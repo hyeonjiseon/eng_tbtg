@@ -25,9 +25,9 @@ function [simValues,outputValues,appParams,simParams,phyParams,outParams] = main
     sinrManagement,timeManagement,positionManagement,stationManagement] = mainInit(appParams,simParams,phyParams,outParams,simValues,outputValues,positionManagement);
 
 %hyeonji - x, y 위치
-x = positionManagement.XvehicleReal;
-y = positionManagement.YvehicleReal;
-plot(x,y,'r*')
+% x = positionManagement.XvehicleReal;
+% y = positionManagement.YvehicleReal;
+% plot(x,y,'r*')
 
 % The simulation starts at time '0'
 timeManagement.timeNow = 0;
@@ -98,9 +98,9 @@ while timeManagement.timeNow < simParams.simulationTime
         % printDebugImage('position update',timeManagement,stationManagement,positionManagement,simParams,simValues);
         
         %hyeonji - x,y vehicle 위치
-        x = positionManagement.XvehicleReal;
-        y = positionManagement.YvehicleReal;
-        plot(x,y,'r*')
+%         x = positionManagement.XvehicleReal;
+%         y = positionManagement.YvehicleReal;
+%         plot(x,y,'r*')
         
         % CASE LTE
     elseif timeEvent == timeManagement.timeNextLTE
