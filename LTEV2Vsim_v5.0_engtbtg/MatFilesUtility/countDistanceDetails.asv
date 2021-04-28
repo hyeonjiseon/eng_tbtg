@@ -39,17 +39,13 @@ for i = 1:1:length(distanceDetailsCounter(:,1))
     testNei = (neighborsID(indexVehicleTX,:)>0).*(neighborsDistance(indexVehicleTX,:) < distance);
     [RXrow, RXcolumn] = find(testNei);
     L = length(indexVehicleTX);
-    n=0;
     for k = 1:L
         for l = k:L:length(RXcolumn)
-            if RXrow(l) == k
-                rxNeiID = neighborsID(indexVehicleTX(k),RXcolumn(l));
-                neiRange = (positionManagement.XvehicleReal(rxNeiID) >= 1000) & (positionManagement.XvehicleReal(rxNeiID) <= 2000);
-                n = n + neiRange;                
-            end
+            rxNeiID = neighborsID(k,l);
+            testX = (positionManagement.XvehicleReal(rxNeiID) >= 1000) & (positionManagement.XvehicleReal(rxNeiID) <= 2000);
+            NrxNeighbors = nnz(testX);
         end
     end
-    NrxNeighbors = n;
 %     n=0;
 %     if ~isempty(rxNeighindex)
 %         for j = 1: length(rxNeighindex)        
