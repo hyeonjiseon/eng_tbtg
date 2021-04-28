@@ -12,7 +12,7 @@ clc          % Clear the command window
     LTEV2Vsim('BenchmarkPoisson.cfg','simulationTime',90, 'rho', 250,...
         'BRAlgorithm',18, 'camDiscretizationType', 'allSteps', ...
         'NLanes', 4, 'roadLength', 3000, 'roadWidth', 4, 'TypeOfScenario', 'ETSI-Highway', ...
-        'printUpdateDelay', true);
+        'printUpdateDelay', true, 'printCBR', true, 'cbrSensingInterval', 0.1);
 %end
 %'cV', 90,
-%'MCS_LTE', 7, 'printCBR', true
+%'MCS_LTE', 7

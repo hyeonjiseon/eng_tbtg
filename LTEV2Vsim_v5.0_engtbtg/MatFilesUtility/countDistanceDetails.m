@@ -33,23 +33,23 @@ for i = 1:1:length(distanceDetailsCounter(:,1))
           
     % Number of receiving neighbors at i meters
     %transmittingID의 neighbors면서 그 거리가 설정된 distance보다 작은 것의 갯수 - hj
-    %NrxNeighbors = nnz((neighborsID(indexVehicleTX,:)>0).*(neighborsDistance(indexVehicleTX,:) < distance));
+    NrxNeighbors = nnz((neighborsID(indexVehicleTX,:)>0).*(neighborsDistance(indexVehicleTX,:) < distance));
         
     %hyeonji - edge effect를 낼 수 있는 차량을 제외시켜야 할 것 같음 
-    testNei = (neighborsID(indexVehicleTX,:)>0).*(neighborsDistance(indexVehicleTX,:) < distance);
-    [RXrow, RXcolumn] = find(testNei);
-    L = length(indexVehicleTX);
-    n=0;
-    for k = 1:L
-        for l = k:L:length(RXcolumn)
-            if RXrow(l) == k
-                rxNeiID = neighborsID(indexVehicleTX(k),RXcolumn(l));
-                neiRange = (positionManagement.XvehicleReal(rxNeiID) >= 1000) & (positionManagement.XvehicleReal(rxNeiID) <= 2000);
-                n = n + neiRange;                
-            end
-        end
-    end
-    NrxNeighbors = n;
+%     testNei = (neighborsID(indexVehicleTX,:)>0).*(neighborsDistance(indexVehicleTX,:) < distance);
+%     [RXrow, RXcolumn] = find(testNei);
+%     L = length(indexVehicleTX);
+%     n=0;
+%     for k = 1:L
+%         for l = k:L:length(RXcolumn)
+%             if RXrow(l) == k
+%                 rxNeiID = neighborsID(indexVehicleTX(k),RXcolumn(l));
+%                 neiRange = (positionManagement.XvehicleReal(rxNeiID) > 1000) & (positionManagement.XvehicleReal(rxNeiID) <= 2000);
+%                 n = n + neiRange;                
+%             end
+%         end
+%     end
+%     NrxNeighbors = n;
 %     n=0;
 %     if ~isempty(rxNeighindex)
 %         for j = 1: length(rxNeighindex)        
@@ -85,18 +85,18 @@ for i = 1:1:length(distanceDetailsCounter(:,1))
                  
     
     % #Errors within i meters
-%     Nerrors = nnz(errorMatrix(:,4) < distance);
+    Nerrors = nnz(errorMatrix(:,4) < distance);
 
     
     %hyeonji - 여기서도 edge effect를 낼 수 있는 차량 제외하기
         
-    testErr = find(errorMatrix(:,4) < distance);
-    testErrX = positionManagement.XvehicleReal(errorMatrix(testErr,2)) >= 1000;
-    testErrX2 = positionManagement.XvehicleReal(errorMatrix(testErr,2)) <= 2000;
-    testErrXindex = find(positionManagement.XvehicleReal(errorMatrix(testErr,2)) >= 1000);
-    testErrX2index = find(positionManagement.XvehicleReal(errorMatrix(testErr,2)) <= 2000);
-    
-    Nerrors = nnz(testErrX & testErrX2);
+%     testErr = find(errorMatrix(:,4) < distance);
+%     testErrX = positionManagement.XvehicleReal(errorMatrix(testErr,2)) > 1000;
+%     testErrX2 = positionManagement.XvehicleReal(errorMatrix(testErr,2)) <= 2000;
+%     testErrXindex = find(positionManagement.XvehicleReal(errorMatrix(testErr,2)) > 1000);
+%     testErrX2index = find(positionManagement.XvehicleReal(errorMatrix(testErr,2)) <= 2000);
+%     
+%     Nerrors = nnz(testErrX & testErrX2);
     
 %     Nerrorshj = nnz((errorMatrix(:,4) < distance) .* ((positionManagement.XvehicleReal(errorMatrix(:,2)) >= 1000) & (positionManagement.XvehicleReal(errorMatrix(:,2)) <= 2000)));
     
