@@ -80,7 +80,27 @@ else %hyeonji - 100ms 이후부터는 RRI가 길면 뛰어넘기
         end
     end
 end
+
+%hyeonji - transmittingID랑 상관없이 그냥 BRid 해당하는 것만큼 RRI 당기기
+%subframe마다 BRidT와 같은 것만 RRP 1씩 당기기
+%shiftBRid = unique(stationManagement.BRid(find(BRidT == (mod((timeManagement.elapsedTime_subframes-1),appParams.NbeaconsT)+1))));
+%hyeonji - NbeaconsF = 2일 때 기준으로 짰음 달라지면 손 봐줘야 하긴 함
+currentSF = mod((timeManagement.elapsedTime_subframes-1),appParams.NbeaconsT)+1;
+shiftBRid = (currentSF*2-1 : currentSF*2)';
+% if mod(currentBRidT, 2) == 0 %짝수면
+%     %hyeonji - BRidT*NbeaconsF랑 BRidT*NbeaconsF-1를 circshift해야 함
+%     shiftBRid = [BRidT*appParams.NbeconsF : BRidT*appParams.NbeconsF-1];
+% else
+%     %hyeonji - BRidT랑 BRidT*NbeaconsF를 circshift해야 함
+%     shiftBRid = [BRidT : BRidT*appParams.NbeaconsF];
+% end
+ 
     
+stationManagement.knownRRPMatrix(shiftBRid,:,:) = circshift(stationManagement.knownRRPMatrix(shiftBRid,:,:),-1,2);
+stationManagement.knownRRPMatrix(shiftBRid,int8(max(timeManagement.generationInterval)*10), :) = 0;
+
+% stationManagement.knownRRPMatrix = circshift(stationManagement.knownRRPMatrix(shiftBRid, -1, 2));%knownRRPMatrix를 RRP행 왼쪽으로 하나 옮기기
+% stationManagement.knownRRPMatrix(:,int8(max(timeManagement.generationInterval)*10), :) = 0;%RRP=1인 건 시간이 지나서 지나감    
     
 
 if ~isempty(stationManagement.transmittingIDsLTE)     

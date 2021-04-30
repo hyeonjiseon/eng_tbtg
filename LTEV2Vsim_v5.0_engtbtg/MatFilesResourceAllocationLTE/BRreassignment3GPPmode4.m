@@ -129,21 +129,29 @@ end
 
 %hyeonji - packetInterval에 따라서 바뀌는 RRP로 예약
 % if (timeManagement.elapsedTime_subframes > 100) && (mod(timeManagement.elapsedTime_subframes, 100) == 0) 
+%이건 200, 300, 400마다 당겨주는 것
 %100ms를 포함하는 게 맞나? 실제 결과는 포함하든 말든 차이가 없긴 함 - hj
 %BRid가 1부터 100까지 정수 중 하나가 뽑히니까 BRidT 100에 RRI 100ms인 것까지 생각하면 100ms를 포함시키지 않는 게 맞는 듯 - hj
-%if mod(timeManagement.elapsedTime_subframes, 100) == 0
-if (timeManagement.elapsedTime_subframes > 100) && (mod(timeManagement.elapsedTime_subframes, 100) == 1)
-    stationManagement.knownRRPMatrix = circshift(stationManagement.knownRRPMatrix, -1, 2);%knownRRPMatrix를 RRP행 왼쪽으로 하나 옮기기
-    stationManagement.knownRRPMatrix(:,int8(max(timeManagement.generationInterval)*10), :) = 0;%RRP=1인 건 시간이 지나서 지나감    
-end
+%if (timeManagement.elapsedTime_subframes > 100) && (mod(timeManagement.elapsedTime_subframes, 100) == 1)
+%이건 101, 201, 301마다 당겨주는 건데,
+
+%hyeonji - 그 다음 BRid 때 ReserveRRPMatrix를 비워주지 않아도 괜찮은 지 확인
+BRidT = ceil((stationManagement.BRid)/appParams.NbeaconsF);
+
 if ~isempty(stationManagement.transmittingIDsLTE)     
     for i = 1:length(stationManagement.indexInActiveIDsOnlyLTE_OfTxLTE)
         idVtx = stationManagement.transmittingIDsLTE(i);%transmittingID(i)
         indexVtxLte = stationManagement.indexInActiveIDsOnlyLTE_OfTxLTE(i);%transmittingID(i) 
         BRtx = stationManagement.BRid(idVtx);%transmittingID(i)의 BRid
+        
+        if BRtx == 1
+            hi = 5;
+        end
+        
         RRItx = stationManagement.RRItx(idVtx);%transmittingID(i)의 RRI
         %hyeonji - transmittingID의 BRid에서 RRP만큼 떨어진 곳으로 예약
         %예약된 거 있나 비워주는 작업이 필요할까? 뭣하러 비워 - hj
+%         stationManagement.ReserveRRPMatrix = zeros(appParams.NbeaconsT*appParams.NbeaconsF,int8(max(timeManagement.generationInterval)*10),length(activeIdsLTE));
         stationManagement.ReserveRRPMatrix(BRtx,RRItx,idVtx) = 1; %일단 0.1~1까지 0.1 단위로만 된다 생각해보자 - hj
         for indexNeighborsOfVtx = 1:length(stationManagement.neighborsIDLTE(indexVtxLte,:)) %transmittingID의 이웃들 갯수 - hj
            idVrx = stationManagement.neighborsIDLTE(indexVtxLte,indexNeighborsOfVtx); %transmittingID의 neighborsID - hj
@@ -154,10 +162,15 @@ if ~isempty(stationManagement.transmittingIDsLTE)
                %hyeonji - 속도에 따른 RRP만큼 떨어진 newBRid, RRP, neighborsID에 1 표시한 RRPMatrix                   
                [BR, RRP] = find(stationManagement.ReserveRRPMatrix(:,:,idVtx)==1); %송신자 입장에서 예약한 게 수신됨 
                stationManagement.knownRRPMatrix(BR, RRP, idVrx) = 1; %수신자 입장에서 RRP 이후 같은 위치 BRid에 체크                            
-           end
+            end
         end
     end
 end
+
+% if mod(timeManagement.elapsedTime_subframes,100) == 0
+%     stationManagement.knownRRPMatrix = circshift(stationManagement.knownRRPMatrix, -1, 2);%knownRRPMatrix를 RRP행 왼쪽으로 하나 옮기기
+%     stationManagement.knownRRPMatrix(:,int8(max(timeManagement.generationInterval)*10), :) = 0;%RRP=1인 건 시간이 지나서 지나감    
+% end
 
 
 %% Update the resReselectionCounter and evaluate which vehicles need reselection
@@ -318,9 +331,16 @@ for indexSensingV = 1:Nscheduled
     % Reassign, selecting a random BR among the bestBR
     BRindex = randi(MBest);
     BR = bestBR(BRindex);
+    
+    %hyeonji - ReserveRRPMatrix에서 이전 BRid에 체크했던 걸 지워줘야 함
+    stationManagement.ReserveRRPMatrix(stationManagement.BRid(scheduledID(indexSensingV)),:,scheduledID(indexSensingV)) = 0;
 
     stationManagement.BRid(scheduledID(indexSensingV))=BR;
     Nreassign = Nreassign + 1;
+    
+    %hyeonji - ReserveRRPMatrix에서 이전 BRid에 체크했던 걸 지워줘야 함
+    stationManagement.ReserveRRPMatrix = zeros(appParams.NbeaconsT*appParams.NbeaconsF,int8(max(timeManagement.generationInterval)*10),length(activeIdsLTE));
+    
     
     printDebugBRofMode4(timeManagement,scheduledID(indexSensingV),BR,outParams);
 end
@@ -338,6 +358,7 @@ end
 %test = [1 2; 3 4]; repmat(test, 2,1) = [1 2;3 4;1 2;3 4]- hj
 % stationManagement.knownUsedMatrixLTE = stationManagement.knownUsedMatrixLTE - repmat(inTheLastSubframe',length(stationManagement.knownUsedMatrixLTE(:,1)),1);
 %length(stationManagement.knownUsedMatrixLTE(:,1)) = 100 - hj
+
 
 
 % The channel busy ratio is calculated, if needed, every subframe for those
