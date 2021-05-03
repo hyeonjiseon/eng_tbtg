@@ -94,7 +94,11 @@ shiftBRid = (currentSF*2-1 : currentSF*2)';
 %     %hyeonji - BRidT랑 BRidT*NbeaconsF를 circshift해야 함
 %     shiftBRid = [BRidT : BRidT*appParams.NbeaconsF];
 % end
- 
+
+%hyeonji - circshift 잘 되는 지
+if timeManagement.elapsedTime_subframes == 200
+    hi = 5;
+end 
     
 stationManagement.knownRRPMatrix(shiftBRid,:,:) = circshift(stationManagement.knownRRPMatrix(shiftBRid,:,:),-1,2);
 stationManagement.knownRRPMatrix(shiftBRid,int8(max(timeManagement.generationInterval)*10), :) = 0;

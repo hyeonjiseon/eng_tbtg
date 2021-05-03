@@ -135,9 +135,6 @@ end
 %if (timeManagement.elapsedTime_subframes > 100) && (mod(timeManagement.elapsedTime_subframes, 100) == 1)
 %이건 101, 201, 301마다 당겨주는 건데,
 
-%hyeonji - 그 다음 BRid 때 ReserveRRPMatrix를 비워주지 않아도 괜찮은 지 확인
-BRidT = ceil((stationManagement.BRid)/appParams.NbeaconsF);
-
 if ~isempty(stationManagement.transmittingIDsLTE)     
     for i = 1:length(stationManagement.indexInActiveIDsOnlyLTE_OfTxLTE)
         idVtx = stationManagement.transmittingIDsLTE(i);%transmittingID(i)
@@ -150,8 +147,8 @@ if ~isempty(stationManagement.transmittingIDsLTE)
         
         RRItx = stationManagement.RRItx(idVtx);%transmittingID(i)의 RRI
         %hyeonji - transmittingID의 BRid에서 RRP만큼 떨어진 곳으로 예약
-        %예약된 거 있나 비워주는 작업이 필요할까? 뭣하러 비워 - hj
-        stationManagement.ReserveRRPMatrix = zeros(appParams.NbeaconsT*appParams.NbeaconsF,int8(max(timeManagement.generationInterval)*10),length(activeIdsLTE));
+        %예약된 거 있나 비워주는 작업이 필요할까? 여기서 해도 되고, 뒤에 reselection할 때마다 바꿔줘도 결과는 똑같다 - hj
+%         stationManagement.ReserveRRPMatrix = zeros(appParams.NbeaconsT*appParams.NbeaconsF,int8(max(timeManagement.generationInterval)*10),length(activeIdsLTE));
         stationManagement.ReserveRRPMatrix(BRtx,RRItx,idVtx) = 1; %일단 0.1~1까지 0.1 단위로만 된다 생각해보자 - hj
         for indexNeighborsOfVtx = 1:length(stationManagement.neighborsIDLTE(indexVtxLte,:)) %transmittingID의 이웃들 갯수 - hj
            idVrx = stationManagement.neighborsIDLTE(indexVtxLte,indexNeighborsOfVtx); %transmittingID의 neighborsID - hj
@@ -333,14 +330,10 @@ for indexSensingV = 1:Nscheduled
     BR = bestBR(BRindex);
     
     %hyeonji - ReserveRRPMatrix에서 이전 BRid에 체크했던 걸 지워줘야 함
-%     stationManagement.ReserveRRPMatrix(stationManagement.BRid(scheduledID(indexSensingV)),:,scheduledID(indexSensingV)) = 0;
+    stationManagement.ReserveRRPMatrix(stationManagement.BRid(scheduledID(indexSensingV)),:,scheduledID(indexSensingV)) = 0;
 
     stationManagement.BRid(scheduledID(indexSensingV))=BR;
     Nreassign = Nreassign + 1;
-    
-    %hyeonji - ReserveRRPMatrix에서 이전 BRid에 체크했던 걸 지워줘야 함
-    stationManagement.ReserveRRPMatrix = zeros(appParams.NbeaconsT*appParams.NbeaconsF,int8(max(timeManagement.generationInterval)*10),length(activeIdsLTE));
-    
     
     printDebugBRofMode4(timeManagement,scheduledID(indexSensingV),BR,outParams);
 end
