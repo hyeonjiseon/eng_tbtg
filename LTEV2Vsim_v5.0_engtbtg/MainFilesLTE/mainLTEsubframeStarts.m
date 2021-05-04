@@ -76,8 +76,7 @@ for i = 1:simValues.maxID
                 txIndex = length(stationManagement.transmittingIDsLTE);
                 stationManagement.transmittingIDsLTE(txIndex+1,1) = i;
             end
-        end
-   
+        end   
     elseif timeManagement.elapsedTime_subframes > stationManagement.TXtime(i,1) + 100 %한 번 전송한 상태 - hj 
         if find(BRidT(i) == (mod((timeManagement.elapsedTime_subframes-1),appParams.NbeaconsT)+1))
            if stationManagement.RRIcount(i) > 1

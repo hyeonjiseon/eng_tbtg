@@ -181,9 +181,16 @@ inTheLastSubframe(activeIdsLTE) = (subframeNextPacket(activeIdsLTE)==currentT);
 
 %hyeonji - 전송시작시간에 따라 RC값 떨어지는 것도 바꿔줘야 할 듯
 for j = 1:length(activeIdsLTE)
-    if (timeManagement.elapsedTime_subframes > stationManagement.TXtime(j,1)) && (timeManagement.elapsedTime_subframes <= stationManagement.TXtime(j,1) + 100) 
-        stationManagement.resReselectionCounterLTE(j) = stationManagement.resReselectionCounterLTE(j) - inTheLastSubframe(j);
-    elseif timeManagement.elapsedTime_subframes > stationManagement.TXtime(j,1) + 100
+    if (timeManagement.elapsedTime_subframes > stationManagement.TXtime(i,1)) && (timeManagement.elapsedTime_subframes <= stationManagement.TXtime(i,1) + 100) 
+    
+
+%hyeonji - 매 패킷 생성 시 RC값 떨어지니까 패킷이 안 생기게 해야 할 것 같다
+%hyeonji - 100ms 단위일 땐 모든 차량이 100ms 안에 한 번씩 전송하니까 이 전송들이 다 끝나고 나면 한번에 RC값을 내려줬다.
+%hyeonji - 100ms 이후부터는 RRI값에 따라 뛰어넘는다.
+if timeManagement.elapsedTime_subframes <=100
+    stationManagement.resReselectionCounterLTE(activeIdsLTE) = stationManagement.resReselectionCounterLTE(activeIdsLTE)-inTheLastSubframe(activeIdsLTE);
+else
+    for j = 1:length(activeIdsLTE)    
         if inTheLastSubframe(j) == 1
             if stationManagement.CountRRI(j) > 1
                 stationManagement.CountRRI(j) = stationManagement.CountRRI(j) - 1;
@@ -192,28 +199,8 @@ for j = 1:length(activeIdsLTE)
                 stationManagement.CountRRI(j) = stationManagement.RRItx(j);
             end
         end
-    else
-        continue;
     end
 end
-
-%hyeonji - 매 패킷 생성 시 RC값 떨어지니까 패킷이 안 생기게 해야 할 것 같다
-%hyeonji - 100ms 단위일 땐 모든 차량이 100ms 안에 한 번씩 전송하니까 이 전송들이 다 끝나고 나면 한번에 RC값을 내려줬다.
-%hyeonji - 100ms 이후부터는 RRI값에 따라 뛰어넘는다.
-% if timeManagement.elapsedTime_subframes <=100
-%     stationManagement.resReselectionCounterLTE(activeIdsLTE) = stationManagement.resReselectionCounterLTE(activeIdsLTE)-inTheLastSubframe(activeIdsLTE);
-% else
-%     for j = 1:length(activeIdsLTE)    
-%         if inTheLastSubframe(j) == 1
-%             if stationManagement.CountRRI(j) > 1
-%                 stationManagement.CountRRI(j) = stationManagement.CountRRI(j) - 1;
-%             elseif stationManagement.CountRRI(j) == 1
-%                 stationManagement.resReselectionCounterLTE(j) = stationManagement.resReselectionCounterLTE(j) - inTheLastSubframe(j);
-%                 stationManagement.CountRRI(j) = stationManagement.RRItx(j);
-%             end
-%         end
-%     end
-% end
 
 % fid = fopen('temp.xls','a');
 % for i=1:length(resReselectionCounter)
