@@ -135,16 +135,14 @@ end
 %if (timeManagement.elapsedTime_subframes > 100) && (mod(timeManagement.elapsedTime_subframes, 100) == 1)
 %이건 101, 201, 301마다 당겨주는 건데,
 
+currentSF = mod((timeManagement.elapsedTime_subframes-1),appParams.NbeaconsT)+1;
+shiftBRid = (currentSF*2-1 : currentSF*2)';
+
 if ~isempty(stationManagement.transmittingIDsLTE)     
     for i = 1:length(stationManagement.indexInActiveIDsOnlyLTE_OfTxLTE)
         idVtx = stationManagement.transmittingIDsLTE(i);%transmittingID(i)
         indexVtxLte = stationManagement.indexInActiveIDsOnlyLTE_OfTxLTE(i);%transmittingID(i) 
         BRtx = stationManagement.BRid(idVtx);%transmittingID(i)의 BRid
-        
-        if BRtx == 1
-            hi = 5;
-        end
-        
         RRItx = stationManagement.RRItx(idVtx);%transmittingID(i)의 RRI
         %hyeonji - transmittingID의 BRid에서 RRP만큼 떨어진 곳으로 예약
         %예약된 거 있나 비워주는 작업이 필요할까? 여기서 해도 되고, 뒤에 reselection할 때마다 바꿔줘도 결과는 똑같다 - hj
@@ -262,7 +260,10 @@ for indexSensingV = 1:Nscheduled
     %        - RSRP threshold를 3dB씩 증가시키며 반복한다.
     
     %hyeonji - scheduledID가 사용할 BR에 해당하는 RRP 체크 값 더함 [0;0;0] -> [0 0 0]
-    knownRRPMatrixScheduled = sum(stationManagement.knownRRPMatrix(:,:,scheduledID(indexSensingV)),2)';
+%     knownRRPMatrixScheduled = sum(stationManagement.knownRRPMatrix(:,:,scheduledID(indexSensingV)),2)';
+    
+    %hyeonji - 내 RRPMatrix의 column만 가져와 보기
+    knownRRPMatrixScheduled = stationManagement.knownRRPMatrix(:,stationManagement.RRItx(scheduledID(indexSensingV)),scheduledID(indexSensingV))';
     
     % The knownUsedMatrix of the scheduled users is obtained
 %     knownUsedMatrixScheduled = stationManagement.knownUsedMatrixLTE(:,scheduledID(indexSensingV))';

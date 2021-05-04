@@ -320,6 +320,12 @@ if simParams.technology ~= 2 % not only 11p
         stationManagement.CountRRI = stationManagement.RRItx;
         %hyeonji - transmittingID 건너뛰기 위함
         stationManagement.RRIcount = stationManagement.RRItx;
+        %hyeonji - 전송시작시간 랜덤하게 하기 위함
+%         stationManagement.TXstart = stationManagement.RRItx;
+        for i = 1:simValues.maxID
+            stationManagement.TXtime(i,1) = randi(stationManagement.RRItx(i),1,1)*100 - 100;
+        end
+      
         
         % Find min and max values for random counter (BRAlgorithm=18)
         [simParams.minRandValueMode4,simParams.maxRandValueMode4] = findRandValueMode4(appParams.averageTbeacon,simParams);
