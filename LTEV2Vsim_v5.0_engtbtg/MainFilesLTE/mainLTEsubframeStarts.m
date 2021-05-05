@@ -82,9 +82,14 @@ for i = 1:simValues.maxID
            if stationManagement.RRIcount(i) > 1
                stationManagement.RRIcount(i) = stationManagement.RRIcount(i) - 1;
            elseif stationManagement.RRIcount(i) == 1
-               txIndex = length(stationManagement.transmittingIDsLTE);
-               stationManagement.transmittingIDsLTE(txIndex+1,1) = i;
-               stationManagement.RRIcount(i) = stationManagement.RRItx(i);
+               if firstadd == true
+                    stationManagement.transmittingIDsLTE = i;
+                    firstadd = false;
+               else
+                   txIndex = length(stationManagement.transmittingIDsLTE);
+                   stationManagement.transmittingIDsLTE(txIndex+1,1) = i;
+                   stationManagement.RRIcount(i) = stationManagement.RRItx(i);
+               end
            end
         end
     else
