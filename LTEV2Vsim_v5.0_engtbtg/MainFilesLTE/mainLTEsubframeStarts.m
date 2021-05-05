@@ -38,6 +38,15 @@ if mod((timeManagement.elapsedTime_subframes-1),appParams.NbeaconsT)+1 == 1
     hi = 1;
 end
 
+%hyeonji - elapsedTime_subframes로 txID 진짜 잘 되나
+if timeManagement.elapsedTime_subframes == 201
+    hi = 3;
+elseif timeManagement.elapsedTime_subframes == 301
+    hi = 4;
+elseif timeManagement.elapsedTime_subframes == 401
+    hi = 5;
+end
+
 % Find IDs of vehicles that are currently transmitting
 %stationManagement.transmittingIDsLTE = find(BRidT == (mod((timeManagement.elapsedTime_subframes-1),appParams.NbeaconsT)+1));
 %mainInit에서 generationPeriod에 따라서 timeNextPacket 설정해서 이대로 가도 됨 - hj
@@ -83,13 +92,13 @@ for i = 1:simValues.maxID
                stationManagement.RRIcount(i) = stationManagement.RRIcount(i) - 1;
            elseif stationManagement.RRIcount(i) == 1
                if firstadd == true
-                    stationManagement.transmittingIDsLTE = i;
+                    stationManagement.transmittingIDsLTE = i;                    
                     firstadd = false;
                else
                    txIndex = length(stationManagement.transmittingIDsLTE);
-                   stationManagement.transmittingIDsLTE(txIndex+1,1) = i;
-                   stationManagement.RRIcount(i) = stationManagement.RRItx(i);
+                   stationManagement.transmittingIDsLTE(txIndex+1,1) = i;                   
                end
+               stationManagement.RRIcount(i) = stationManagement.RRItx(i);
            end
         end
     else
