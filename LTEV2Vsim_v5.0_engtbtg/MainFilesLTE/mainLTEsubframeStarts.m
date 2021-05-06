@@ -139,7 +139,8 @@ end
 %shiftBRid = unique(stationManagement.BRid(find(BRidT == (mod((timeManagement.elapsedTime_subframes-1),appParams.NbeaconsT)+1))));
 %hyeonji - NbeaconsF = 2일 때 기준으로 짰음 달라지면 손 봐줘야 하긴 함
 currentSF = mod((timeManagement.elapsedTime_subframes-1),appParams.NbeaconsT)+1;
-shiftBRid = (currentSF*2-1 : currentSF*2)';
+shiftBRid = (((currentSF-1)*appParams.NbeaconsF+1):(currentSF*appParams.NbeaconsF))';
+% shiftBRid2 = (currentSF*2-1 : currentSF*2)';
 % if mod(currentBRidT, 2) == 0 %짝수면
 %     %hyeonji - BRidT*NbeaconsF랑 BRidT*NbeaconsF-1를 circshift해야 함
 %     shiftBRid = [BRidT*appParams.NbeconsF : BRidT*appParams.NbeconsF-1];
