@@ -326,23 +326,23 @@ for indexSensingV = 1:Nscheduled
     %hyeonji - (step 3 : RSSI 평균값들 중 가장 낮은 20% 중에서) 랜덤선택
     % To mark unacceptable RB as occupied, their power is set to Inf
     %usableBRs가 아닌 것은 값을 더해서 sensingMatrixPerm에서 값을 높여 버림 - hj
-%     sensingMatrixPerm = sensingMatrixPerm + (1-usableBRs) * max(phyParams.P_ERP_MHz_LTE);
-%     
+    sensingMatrixPerm = sensingMatrixPerm + (1-usableBRs) * max(phyParams.P_ERP_MHz_LTE);
+    
     % Sort sensingMatrix in ascending order
     %sensingMatrixPerm을 값이 낮은 순서로 재배열, column index를 뽑아냄 - hj
-%     [~, bestBRPerm] = sort(sensingMatrixPerm);
+    [~, bestBRPerm] = sort(sensingMatrixPerm);
 
     % Reorder bestBRid matrix
     %bestBRPerm은 sensingMatrixPerm을 값이 낮은 순서대로 정렬한 것의 column index이다. - hj
     %sensingMatrixPerm은 이미 rpMatrix 순서로 섞어 놓은 상태이므로, 원래 BRid를 알기 위해선 rpMatrix(index)값을 봐야 한다. - hj
-%     bestBR = rpMatrix(bestBRPerm);
+    bestBR = rpMatrix(bestBRPerm);
 
     % Keep the best M canditates
-%     bestBR = bestBR(1:MBest);
+    bestBR = bestBR(1:MBest);
 
     %hyeonji - NR SPS
-    idx = find(usableBRs == 1);
-    bestBR = rpMatrix(idx);
+%     idx = find(usableBRs == 1);
+%     bestBR = rpMatrix(idx);
 
     % Reassign, selecting a random BR among the bestBR
     BRindex = randi(MBest);
