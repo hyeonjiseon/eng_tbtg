@@ -68,8 +68,6 @@ end
 
 %hyeonji - 처음에 다 전송하는 게 아니라, RRI에 따라서 랜덤하게 전송 시작 시간을 설정할 수 있어야 함
 %firstTX = ones(simValues.maxID, 1); %처음이라 RRI를 따질 필요 없음
-%hyeonji - stationManagement.transmittingIDsLTE를 비워주고 시작하기
-stationManagement.transmittingIDsLTE = [];
 firstadd = true;
 for i = 1:simValues.maxID    
     %hyeonji - RRI값에 해당하는 값에서 랜덤으로 값을 선택하여 그 시간 이후에 전송할 것이다.
@@ -108,6 +106,8 @@ for i = 1:simValues.maxID
     end
 end                
      
+
+if timeManagement.timeNow =
 %     for i = 1:simValues.maxID
 %         TXtime(i,1) = randi(stationManagement.TXstart(i),1,1)*100;
 %     end

@@ -39,6 +39,23 @@ cbr 높으면 차이가 적을 것
 250
 PIR재면..
 
+(5/7)
+Tb는 resource allocation하는 주기를 말한다.
+resource allocation이라는 건 Rc값을 다시 선택해 주게 되는 주기를 말하는 건 지, RRI 값을 말하는 건 지..
+-> RRi 값이 맞다
+* RRI 접근하는 방식에서 문제가 있을 수 밖에 없다.
+* 진짜 예약한다고 말을 안 해서 문제일 수도 있다.
+* circshift도..
+*knownUsedMatrix에서 Rc값이 먼저 떨어지면 재선택 가능????
+
+(5/10)
+*아니 aperiodic traffic이 NR V2X에서 허용됐다며???
+*영준stochastic 논문
+However, other vehicles can consider the resource to be available to them, because they have not heard an explicit reservation for Rx,y+3. 
+Then the neighbors can select it, 
+e.g. when they start a new packet run.
+It can directly increase the number of packet collisions in the system.
+이게 그럼 no show가 일어나도 RC값이 남아 있으면 전송이 계속 일어나긴 하는 거???
 
 3. 한 시뮬레이션에서 변환sps와 기존 sps 같이 PRR 결과 나오게 하기
   - outParams.enableUpdateDelayHD가 동일한 subframe에서 동시 전송으로만 발생하는 업데이트 지연을 계산할 수 있는 boolean이라는데,

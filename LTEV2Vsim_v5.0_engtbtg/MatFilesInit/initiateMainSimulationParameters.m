@@ -199,10 +199,10 @@ else
         end
         
         %hyeonji - 지정 속도
-        [simParams,varargin] = addNewParam(simParams,'cV',48,'constant velocity of vehicles(km/h)','double',fileCfg,varargin{1});
-        if simParams.cV<0
-            error('Error: "simParams.cV" cannot be < 0');
-        end
+%         [simParams,varargin] = addNewParam(simParams,'cV',48,'constant velocity of vehicles(km/h)','double',fileCfg,varargin{1});
+%         if simParams.cV<0
+%             error('Error: "simParams.cV" cannot be < 0');
+%         end
         
     elseif simParams.typeOfScenario==3 % ETSI Highway high speed
         % [roadLength]
@@ -211,6 +211,7 @@ else
         if simParams.roadLength<=0
             error('Error: "simParams.roadLength" cannot be <= 0');
         end
+        %이상하게 가만 두면 roadLength가 1000으로 저장됨 - hj
 
         % [roadWidth]
         % Width of each lane (m)
@@ -218,6 +219,7 @@ else
         if simParams.roadWidth<0
             error('Error: "simParams.roadWidth" cannot be < 0');
         end
+        %이상하게 가만 두면 roadWidth가 0으로 저장됨 - hj
         
         % [vMean]
         % Mean speed of vehicles (km/h)
@@ -225,6 +227,7 @@ else
         if simParams.vMean<0
             error('Error: "simParams.vMean" cannot be < 0');
         end
+        %이상하게 가만 두면 vMean이 50으로 저장됨 - hj
 
         % [vStDev]
         % Standard deviation of speed of vehicles (km/h)
@@ -232,6 +235,7 @@ else
         if simParams.vStDev<0
             error('Error: "simParams.vStDev" cannot be < 0');
         end
+        %이상하게 가만 두면 vStDev가 3으로 저장됨 - hj
         
         % [rho]
         % Density of vehicles (vehicles/km)
