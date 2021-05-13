@@ -57,6 +57,11 @@ e.g. when they start a new packet run.
 It can directly increase the number of packet collisions in the system.
 이게 그럼 no show가 일어나도 RC값이 남아 있으면 전송이 계속 일어나긴 하는 거???
 
+NR로 바꾼 step3지우는 거 해도 안됨
+5/12
+transmittingID비워주기 추가
+
+
 3. 한 시뮬레이션에서 변환sps와 기존 sps 같이 PRR 결과 나오게 하기
   - outParams.enableUpdateDelayHD가 동일한 subframe에서 동시 전송으로만 발생하는 업데이트 지연을 계산할 수 있는 boolean이라는데,
     이것도 true 시켜줘야 할까? half duplex 전용이라고 하긴 하는데..???????????????

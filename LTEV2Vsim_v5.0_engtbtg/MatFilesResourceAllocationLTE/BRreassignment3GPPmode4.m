@@ -190,11 +190,11 @@ inTheLastSubframe(activeIdsLTE) = (subframeNextPacket(activeIdsLTE)==currentT);
 % Among them, those that have reached 0 need to be reset between min and max
 % stationManagement.resReselectionCounterLTE(activeIdsLTE) = stationManagement.resReselectionCounterLTE(activeIdsLTE)-inTheLastSubframe(activeIdsLTE);
 
-%hyeonji - 전송시작시간에 따라 RC값 떨어지는 것도 바꿔줘야 할 듯
+%hyeonji - 전송시작시간에 따라 RC값 떨어지는 것도 바꿔줘야 할 듯 -> 패킷생성시간 맞춰서 떨어뜨려야 함
 for j = 1:length(activeIdsLTE)
     if (timeManagement.elapsedTime_subframes > stationManagement.TXtime(j,1)) && (timeManagement.elapsedTime_subframes <= stationManagement.TXtime(j,1) + 100) 
         stationManagement.resReselectionCounterLTE(j) = stationManagement.resReselectionCounterLTE(j) - inTheLastSubframe(j);
-    elseif timeManagement.elapsedTime_subframes > stationManagement.TXtime(j,1) + 100
+    elseif timeManagement.elapsedTime_subframes > stationManagement.TXtime(j,1) + 100        
         if inTheLastSubframe(j) == 1
             if stationManagement.CountRRI(j) > 1
                 stationManagement.CountRRI(j) = stationManagement.CountRRI(j) - 1;
@@ -236,7 +236,7 @@ end
 % Calculate IDs of vehicles which perform reselection
 scheduledID = find(stationManagement.resReselectionCounterLTE==0);
 
-% Calculate the number of vehicles which perform reselection
+% Calculate the number of vehicles which perform reselection-
 Nscheduled = length(scheduledID);
 
 % Calculate new resReselectionCounter for scheduledID

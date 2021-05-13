@@ -193,8 +193,26 @@ inTheLastSubframe(activeIdsLTE) = (subframeNextPacket(activeIdsLTE)==currentT);
 %hyeonji - 전송시작시간에 따라 RC값 떨어지는 것도 바꿔줘야 할 듯
 for j = 1:length(activeIdsLTE)
     if (timeManagement.elapsedTime_subframes > stationManagement.TXtime(j,1)) && (timeManagement.elapsedTime_subframes <= stationManagement.TXtime(j,1) + 100) 
+        
+        if inTheLastSubframe(62) == 1
+            hi = 11;
+        elseif inTheLastSubframe(80) == 1
+            hi = 12;
+        elseif inTheLastSubframe(191) == 1
+            hi = 13;
+        end
+        
         stationManagement.resReselectionCounterLTE(j) = stationManagement.resReselectionCounterLTE(j) - inTheLastSubframe(j);
     elseif timeManagement.elapsedTime_subframes > stationManagement.TXtime(j,1) + 100
+        
+        if inTheLastSubframe(62) == 1
+            hi = 21;
+        elseif inTheLastSubframe(80) == 1
+            hi = 22;
+        elseif inTheLastSubframe(191) == 1
+            hi = 23;
+        end
+        
         if inTheLastSubframe(j) == 1
             if stationManagement.CountRRI(j) > 1
                 stationManagement.CountRRI(j) = stationManagement.CountRRI(j) - 1;
@@ -236,7 +254,7 @@ end
 % Calculate IDs of vehicles which perform reselection
 scheduledID = find(stationManagement.resReselectionCounterLTE==0);
 
-% Calculate the number of vehicles which perform reselection
+% Calculate the number of vehicles which perform reselection-
 Nscheduled = length(scheduledID);
 
 % Calculate new resReselectionCounter for scheduledID
