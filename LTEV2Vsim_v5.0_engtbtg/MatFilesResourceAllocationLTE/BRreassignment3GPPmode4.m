@@ -116,7 +116,11 @@ end
 %               %이웃이 쏜 SCI가 해독됐고, 내 이웃들이 현재 쏘고 있는 자원칸을 이웃들이 얼마나 더 쓸 건지,
 %               %이웃이 계쏙 쓰면 그것을 제외하기 위함 - jh
 %                stationManagement.knownUsedMatrixLTE(BRtx,idVrx) = stationManagement.resReselectionCounterLTE(idVtx);
+%                break;
 %                %knownUsedMatrix(txID의 BRid, neighborsID)에 그 RC값 update - hj
+                 %내 기준으로 주변 차 중 BRid를 사용하고 있는 부녀 애들 중 RC값 가장 큰 것+sci 제대로 받았을 때 update - hj
+                 %원래 sci에 있는 RRI 보고 다음 자원만 아는 건데 RC값으로 저장하면 전송 실패해도 예약된 줄
+                 %알게 됨. 따라서 elseif를 추가하여 전송 실패 시 0이 되도록 만듦 - hj
 %            % NOTE: the SCI is here assumed to advertise the current value of the reselection
 %            % counter, which is an approximation of what in TS 36.213, Table 14.2.1-2
 %            elseif stationManagement.correctSCImatrixLTE(i, indexNeighborsOfVtx) == 0 
